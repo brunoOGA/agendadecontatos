@@ -1,0 +1,11 @@
+{
+  "expo": {
+    "name": "agendadecontatos",
+    "slug": "agendadecontatos",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  },
+  "name": "agendadecontatos"
+}
