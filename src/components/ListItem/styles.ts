@@ -1,6 +1,7 @@
 import styled from 'styled-components/native';
 import { RectButton } from 'react-native-gesture-handler';
 import { Feather } from '@expo/vector-icons';
+import { RFValue } from 'react-native-responsive-fontsize';
 
 export const Container = styled(RectButton)`
   background-color: ${({ theme }) => theme.colors.shape};
@@ -13,9 +14,9 @@ export const Container = styled(RectButton)`
 `;
 
 export const InitialLetter = styled.View`
-  width: 48px;
-  height: 48px;
-  border-radius: 24px;
+  width: ${RFValue(48)}px;
+  height: ${RFValue(48)}px;
+  border-radius: ${RFValue(24)}px;
   background-color: ${({ theme }) => theme.colors.primary};
 
   align-items: center;
@@ -25,7 +26,7 @@ export const InitialLetter = styled.View`
 export const InitialLetterText = styled.Text`
   font-family: ${({ theme }) => theme.fonts.bold};
   color: ${({ theme }) => theme.colors.shape};
-  font-size: 32px;
+  font-size: ${RFValue(32)}px;
 `;
 
 export const Name = styled.Text`
@@ -34,7 +35,7 @@ export const Name = styled.Text`
 
   font-family: ${({ theme }) => theme.fonts.medium};
   color: ${({ theme }) => theme.colors.title};
-  font-size: 16px;
+  font-size: ${RFValue(16)}px;
 `;
 
 export const Icon = styled(Feather)`

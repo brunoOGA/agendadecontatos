@@ -14,7 +14,7 @@ export function AddButton({onPress, ...rest}: Props) {
   return (
 
     <Container onPress={onPress} {...rest}>
-      <Icon name="user-plus" size={30} />
+      <Icon name="user-plus" />
     </Container>
   );
 }

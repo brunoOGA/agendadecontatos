@@ -1,19 +1,35 @@
-import styled from 'styled-components/native';
+import styled, { css } from 'styled-components/native';
 import { RectButton } from 'react-native-gesture-handler';
+import { RFValue } from 'react-native-responsive-fontsize';
 
-export const Container = styled(RectButton)`
+interface Props  {
+  type: 'success' | 'attention'
+};
+
+export const Container = styled(RectButton)<Props>`
   width: 100%;
-  background-color: ${({ theme }) => theme.colors.success};
 
   align-items: center;
   justify-content: center;
   
   padding: 16px;
   border-radius: 8px;
+
+  ${({ type }) => 
+   type === 'success' && css`
+      background-color: ${({ theme }) => theme.colors.success};
+    `
+  }
+
+${({ type }) => 
+   type === 'attention' && css`
+      background-color: ${({ theme }) => theme.colors.attention};
+    `
+  }
 `;
 
 export const ButtonText = styled.Text`
   color: ${({ theme }) => theme.colors.shape};
   font-family: ${({ theme }) => theme.fonts.medium};
-  font-size: 20px;
+  font-size: ${RFValue(20)}px;
 `;

@@ -1,6 +1,7 @@
 import styled from 'styled-components/native';
 import { TextInput } from 'react-native';
 import { Feather } from '@expo/vector-icons';
+import { RFValue } from 'react-native-responsive-fontsize';
 
 export const Container = styled.View`
   width: 100%;
@@ -18,7 +19,7 @@ export const Input = styled(TextInput)`
 
   font-family: ${({ theme }) => theme.fonts.regular};
   color: ${({ theme }) => theme.colors.text_dark};
-  font-size: 16px;
+  font-size: ${RFValue(16)}px;
 
   align-items: center;
   justify-content: center;
