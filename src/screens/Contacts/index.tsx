@@ -1,4 +1,5 @@
 import React from 'react';
+import { contacts } from '../../utils/contacts';
 
 import {
   Container
@@ -7,7 +8,7 @@ import {
 export function Contacts() {
   return (
     <Container>
-
+      
     </Container>
   )
 }
