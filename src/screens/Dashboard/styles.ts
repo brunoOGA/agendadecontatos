@@ -129,7 +129,7 @@ export const InitialLetterText = styled.Text`
 export const ContactsList = styled(FlatList as new () => FlatList<IContact>) <Props>`
   ${({ flag }) => flag ? 
     css` 
-      margin-top: ${RFPercentage(10)}px;
+      margin-top: ${RFPercentage(8)}px;
     `
     :
     css`
@@ -144,3 +144,19 @@ export const Separator = styled.View`
   width: 100%;
   margin-bottom: 8px;
 `;
+
+export const NewContacts = styled.View`
+  margin-top: ${RFPercentage(8)}px;
+
+  padding: 0 24px;
+`;
+
+export const NewContactsTitle = styled.Text`
+  width: 100%;
+  text-align: center;
+  font-family: ${({ theme }) => theme.fonts.bold};
+  color: ${({ theme }) => theme.colors.title};
+  font-size:  ${RFValue(24)}px;
+  margin-bottom: 32px;
+`;
+

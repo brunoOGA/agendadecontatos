@@ -52,8 +52,8 @@ interface IContactContextData {
 export const ContactContext = createContext({} as IContactContextData);
 
 function ContactProvider({ children }: ContactProviderProps) {
-  const { group, groups } = useGroup();
-  
+  const { group, setGroup, groups } = useGroup();
+
   const [contact, setContact] = useState<ContactData>({} as ContactData);
   const [contacts, setContacts] = useState<ContactData[]>([] as ContactData[]);
 
@@ -69,16 +69,20 @@ function ContactProvider({ children }: ContactProviderProps) {
         .database()
         .ref(`/users/${currentUser.uid}/groups/${group.id}/contacts`)
         .push(contact)
-      if(currentUser.email) {
+      if (currentUser.email) {
         await sendEmail({ email: currentUser.email, contactName: contact.name });
       }
     }
-
-    await watchContacts();
   }
 
   async function watchContacts(groupId?: GroupId): Promise<void> {
     const { currentUser } = firebase.auth();
+
+    const findGroup = groups.find(element => element.id === groupId?.groupId);
+
+    if (findGroup) {
+      setGroup(findGroup);
+    }
 
     if (currentUser) {
       setContacts([]);

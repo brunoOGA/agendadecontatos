@@ -97,6 +97,7 @@ function GroupProvider({ children }: GroupProviderProps) {
                 if (currentUser) {
                   await firebase.database().ref(`/users/${currentUser.uid}/groups/${group.id}`).remove();
 
+                  setGroup({} as GroupData);
                   await watchGroups();
 
                   resolve(true);

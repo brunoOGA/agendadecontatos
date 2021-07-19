@@ -94,7 +94,7 @@ const schema = Yup.object().shape({
 export function FormContact() {
   const { goBack, navigate } = useNavigation();
   const { group, setGroup } = useGroup();
-  const { createContact } = useContact();
+  const { createContact, watchContacts } = useContact();
   const [error, setError] = useState('')
 
   const { handleSubmit, control, getValues, formState: { errors } } = useForm({
@@ -117,6 +117,7 @@ export function FormContact() {
       return;
     }
     createContact(form);
+    watchContacts();
     setGroup({
       id: '',
       name: ''
