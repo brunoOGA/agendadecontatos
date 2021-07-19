@@ -1,6 +1,15 @@
 import React from 'react';
+import { TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { useForm } from 'react-hook-form';
+import * as Yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup'
+
+import { InputForm } from '../../components/Form/InputForm';
+import { Label } from '../../components/Form/Label';
+import { Button } from '../../components/Form/Button';
+
 import { useAuth } from '../../hooks/auth';
-import firebase from 'firebase';
 
 import {
   Container,
@@ -14,15 +23,6 @@ import {
   FooterLink,
   FooterLinkText,
 } from './styles';
-import { Alert, TouchableWithoutFeedback, Keyboard } from 'react-native';
-import { Input } from '../../components/Form/Input';
-import { Button } from '../../components/Form/Button';
-import { useNavigation } from '@react-navigation/native';
-import { useForm } from 'react-hook-form';
-import * as Yup from 'yup';
-import { yupResolver } from '@hookform/resolvers/yup'
-import { InputForm } from '../../components/Form/InputForm';
-import { Label } from '../../components/Form/Label';
 
 interface FormData {
   email: string;

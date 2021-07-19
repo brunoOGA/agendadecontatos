@@ -1,9 +1,13 @@
-import React, { useContext, ReactNode, createContext } from 'react';
+import React, { 
+  useContext, 
+  ReactNode, 
+  createContext, 
+  useEffect, 
+  useState 
+} from 'react';
 import firebase from 'firebase';
 import { Alert } from 'react-native';
-import { useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useEffect } from 'react';
 
 interface AuthProviderProps {
   children: ReactNode;

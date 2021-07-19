@@ -1,31 +1,9 @@
-import { RFValue } from 'react-native-responsive-fontsize';
 import styled from 'styled-components/native';
-import { MaterialIcons } from '@expo/vector-icons';
+import { RFValue } from 'react-native-responsive-fontsize';
 
 export const Container = styled.ScrollView`
   flex: 1;
   padding: 24px;
-`;
-
-export const Label = styled.View`
-  flex-direction: row;
-
-  align-items: center;
-  justify-content: center;
-
-  margin-bottom: 8px;
-`;
-
-export const LabelIcon = styled(MaterialIcons)`
-  color: ${({ theme }) => theme.colors.title};
-`;
-
-export const LabelText = styled.Text`
-  font-family: ${({ theme }) => theme.fonts.medium};
-  color: ${({ theme }) => theme.colors.title};
-  font-size: ${RFValue(24)}px;
-  flex: 1;
-  margin-left: 8px;
 `;
 
 export const Divider = styled.View`

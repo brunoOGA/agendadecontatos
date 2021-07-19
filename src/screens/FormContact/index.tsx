@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useForm } from 'react-hook-form';
@@ -8,10 +8,9 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { Button } from '../../components/Form/Button';
 import { InputForm } from '../../components/Form/InputForm';
 import { useFieldArray } from 'react-hook-form';
-import { GroupSelectButton } from '../../components/Form/CategorySelectButton';
+import { GroupSelectButton } from '../../components/Form/GroupSelectButton';
 import { Label } from '../../components/Form/Label';
 import { searchCEP } from '../../utils/searchCep';
-import { useEffect } from 'react';
 import { useGroup } from '../../hooks/group';
 import { useContact } from '../../hooks/contact';
 
@@ -199,7 +198,7 @@ export function FormContact() {
             </Divider>
             <Divider>
               <ContactInformation>
-                <ContactInformationIcon name="location-on" size={32} />
+                <ContactInformationIcon name="location" size={32} />
                 <ContactInformationText>
                   Endereço
                 </ContactInformationText>

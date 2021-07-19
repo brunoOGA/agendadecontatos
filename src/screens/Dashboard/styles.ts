@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components/native';
+import { FlatList } from 'react-native';
 import { FontAwesome, AntDesign } from '@expo/vector-icons';
 import { RFPercentage, RFValue } from 'react-native-responsive-fontsize';
-import { FlatList } from 'react-native';
 import { RectButton } from 'react-native-gesture-handler';
 
 interface Address {

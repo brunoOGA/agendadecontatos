@@ -27,11 +27,10 @@ import {
   InitialLetterText,
   ContactsList,
 } from './styles';
-import { completeContacts } from '../../utils/completeContacts';
 
 export function Dashboard() {
   const navigation = useNavigation();
-  const { groups, deleteGroup } = useGroup();
+  const { group, groups, deleteGroup } = useGroup();
   const { contacts, watchContacts, deleteContact } = useContact();
   const [flagGroups, setFlagGroups] = useState(true);
   const [filter, setFilter] = useState("");
@@ -71,8 +70,6 @@ export function Dashboard() {
               onBlur={() => setFlagGroups(true)}
             />
           </HeaderInfo>
-
-
         </Header>
         {flagGroups &&
           <Groups>
@@ -128,7 +125,6 @@ export function Dashboard() {
           contentContainerStyle={{ paddingBottom: 24 }}
           ItemSeparatorComponent={() => <Separator />}
         />
-
         <AddButton onPress={() => navigation.navigate('FormContact')} />
       </Container>
 

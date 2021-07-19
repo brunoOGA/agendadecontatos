@@ -1,14 +1,13 @@
+import React, { useState } from 'react';
 import { useRoute } from '@react-navigation/native';
 import AppLoading from 'expo-app-loading';
-import React, { useState } from 'react';
 import { useEffect } from 'react';
+
+import { Label } from '../../components/Form/Label';
 import { useContact } from '../../hooks/contact';
 
 import {
   Container,
-  Label,
-  LabelIcon,
-  LabelText,
   Divider,
   Text,
   Phones,
@@ -40,26 +39,17 @@ export function Contact() {
   return (
     <Container contentContainerStyle={{ paddingBottom: 24 }}>
       <Divider>
-        <Label>
-          <LabelIcon name="person" size={32} />
-          <LabelText>Nome</LabelText>
-        </Label>
+        <Label title="Nome" icon="user" />
         <Text>{contact.name}</Text>
       </Divider>
       <Divider>
-        <Label>
-          <LabelIcon name="group" size={32} />
-          <LabelText>Grupo</LabelText>
-        </Label>
+        <Label icon="users" title="Grupo" />
         <Text>Familia</Text>
       </Divider>
       {
         (contact.phones && contact.phones.length !== 0) && (
           <Divider>
-            <Label>
-              <LabelIcon name="phone" size={32} />
-              <LabelText>Telefone</LabelText>
-            </Label>
+            <Label icon="phone" title="Telefone" />
             <Phones>
               {
                 contact.phones.map(phone => (
@@ -73,10 +63,7 @@ export function Contact() {
       {
         (contact.addresses && contact.addresses.length !== 0) && (
           <Divider>
-            <Label>
-              <LabelIcon name="location-on" size={32} />
-              <LabelText>Endereço</LabelText>
-            </Label>
+            <Label icon="location" title="Endereço" />
             <Addresses>
               {
                 contact.addresses.map(address => (

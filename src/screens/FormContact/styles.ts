@@ -1,5 +1,5 @@
 import styled from 'styled-components/native';
-import { Feather, MaterialIcons, FontAwesome } from '@expo/vector-icons';
+import { Feather, Entypo } from '@expo/vector-icons';
 import { RectButton } from 'react-native-gesture-handler';
 import { RFValue } from 'react-native-responsive-fontsize';
 
@@ -37,7 +37,7 @@ export const ContactInformation = styled.View`
   margin-bottom: 8px;
 `;
 
-export const ContactInformationIcon = styled(MaterialIcons)`
+export const ContactInformationIcon = styled(Entypo)`
   color: ${({ theme }) => theme.colors.title};
 `;
 
