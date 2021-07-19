@@ -1,4 +1,8 @@
-import React from 'react';
+import { useRoute } from '@react-navigation/native';
+import AppLoading from 'expo-app-loading';
+import React, { useState } from 'react';
+import { useEffect } from 'react';
+import { useContact } from '../../hooks/contact';
 
 import {
   Container,
@@ -12,7 +16,27 @@ import {
   Address,
 } from './styles';
 
+interface Props {
+  id: string
+}
+
 export function Contact() {
+  const { findContactById, contact } = useContact();
+  const [loading, isLoading] = useState(true);
+
+  const routes = useRoute();
+
+  const { id } = routes.params as Props;
+
+  useEffect(() => {
+    findContactById(id);
+    isLoading(false)
+  }, [])
+
+  if (loading) {
+    return <AppLoading />
+  }
+
   return (
     <Container contentContainerStyle={{ paddingBottom: 24 }}>
       <Divider>
@@ -20,7 +44,7 @@ export function Contact() {
           <LabelIcon name="person" size={32} />
           <LabelText>Nome</LabelText>
         </Label>
-        <Text>Bruno</Text>
+        <Text>{contact.name}</Text>
       </Divider>
       <Divider>
         <Label>
@@ -29,38 +53,46 @@ export function Contact() {
         </Label>
         <Text>Familia</Text>
       </Divider>
-      <Divider>
-        <Label>
-          <LabelIcon name="phone" size={32} />
-          <LabelText>Telefone</LabelText>
-        </Label>
-        <Phones>
-          <Text>1499999999</Text>
-          <Text>1499999999</Text>
-        </Phones>
-      </Divider>
-      <Divider>
-        <Label>
-          <LabelIcon name="location-on" size={32} />
-          <LabelText>Endereço</LabelText>
-        </Label>
-        <Addresses>
-          <Address>
-            <Text>CEP: 11111111</Text>
-            <Text>Logradouro: Rua avenida</Text>
-            <Text>Bairro: Bairro cidade</Text>
-            <Text>Cidade: Cidade numero</Text>
-            <Text>Número: 444</Text>
-          </Address>
-          <Address>
-            <Text>CEP: 11111111</Text>
-            <Text>Logradouro: Rua avenida</Text>
-            <Text>Bairro: Bairro cidade</Text>
-            <Text>Cidade: Cidade numero</Text>
-            <Text>Número: 444</Text>
-          </Address>
-        </Addresses>
-      </Divider>
+      {
+        (contact.phones && contact.phones.length !== 0) && (
+          <Divider>
+            <Label>
+              <LabelIcon name="phone" size={32} />
+              <LabelText>Telefone</LabelText>
+            </Label>
+            <Phones>
+              {
+                contact.phones.map(phone => (
+                  <Text key={phone.number}>- {phone.number}</Text>
+                ))
+              }
+            </Phones>
+          </Divider>
+        )
+      }
+      {
+        (contact.addresses && contact.addresses.length !== 0) && (
+          <Divider>
+            <Label>
+              <LabelIcon name="location-on" size={32} />
+              <LabelText>Endereço</LabelText>
+            </Label>
+            <Addresses>
+              {
+                contact.addresses.map(address => (
+                  <Address key={address.cep}>
+                    <Text>CEP: {address.cep}</Text>
+                    <Text>Logradouro: {address.street}</Text>
+                    <Text>Bairro: {address.district}</Text>
+                    <Text>Cidade: {address.city}</Text>
+                    <Text>Número: {address.number}</Text>
+                  </Address>
+                ))
+              }
+            </Addresses>
+          </Divider>
+        )
+      }
     </Container >
   )
 }

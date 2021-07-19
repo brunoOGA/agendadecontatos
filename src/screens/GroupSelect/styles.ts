@@ -37,7 +37,7 @@ export const Group = styled(RectButton)<GroupProps>`
   align-items: center;
 
   background-color: ${({ theme, isActive }) =>
-    isActive ? theme.colors.shape : theme.colors.background
+    isActive ? theme.colors.secondary : theme.colors.background
   };
 `;
 

@@ -1,10 +1,23 @@
 import React, { useState } from 'react';
+import { View } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { useForm } from 'react-hook-form';
+import * as Yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
+
 import { Button } from '../../components/Form/Button';
-import { Input } from '../../components/Form/Input';
-import uuid from 'react-native-uuid';
+import { InputForm } from '../../components/Form/InputForm';
+import { useFieldArray } from 'react-hook-form';
+import { GroupSelectButton } from '../../components/Form/CategorySelectButton';
+import { Label } from '../../components/Form/Label';
+import { searchCEP } from '../../utils/searchCep';
+import { useEffect } from 'react';
+import { useGroup } from '../../hooks/group';
+import { useContact } from '../../hooks/contact';
 
 import {
   Container,
+  Error,
   ContactInformation,
   ContactInformationIcon,
   ContactInformationText,
@@ -13,21 +26,15 @@ import {
   Information,
   ContactInformationRemoveButton,
   ContactInformationRemoveButtonIcon,
+  ContactInformationSearchButton,
+  ContactInformationSearchButtonIcon,
   Address,
-  Label,
-  LabelIcon,
-  LabelText,
   Form,
   Fields,
   Divider,
 } from './styles';
-import { Modal } from 'react-native';
-import { GroupSelectButton } from '../../components/Form/CategorySelectButton';
-import { GroupSelect } from '../GroupSelect';
-import { useNavigation } from '@react-navigation/native';
 
 interface Address {
-  id: string;
   cep: string;
   city: string;
   street: string;
@@ -36,154 +43,241 @@ interface Address {
 }
 
 interface Phone {
-  id: string;
   number: string;
 }
 
+interface FormData {
+  name: string;
+  phones: Phone[];
+  addresses: Address[];
+}
+
+const schemaAddress = Yup.object().shape({
+  cep: Yup
+    .string()
+    .length(9, 'CEP é composto por 9 dígitos')
+    .required('O CEP é obrigatório'),
+  city: Yup
+    .string()
+    .required('O cidade é obrigatório'),
+  street: Yup
+    .string()
+    .required('O logradouro é obrigatório'),
+  district: Yup
+    .string()
+    .required('O bairro é obrigatório'),
+  number: Yup
+    .number()
+    .typeError("Informe um valor numérico")
+    .required('O número é obrigatório'),
+});
+
+const schemaPhone = Yup.object().shape({
+  number: Yup
+    .string()
+    .min(13, ({ min }) => `O telefone deve ter pelo menos ${min} caracteres`)
+    .required('O telefone é obrigatório'),
+});
+
+const schema = Yup.object().shape({
+  name: Yup
+    .string()
+    .min(3, ({ min }) => `O nome deve ter pelo menos ${min} caracteres`)
+    .required('É necessário um nome'),
+  addresses: Yup
+    .array()
+    .of(schemaAddress),
+  phones: Yup
+    .array()
+    .of(schemaPhone),
+});
+
 export function FormContact() {
-  const [group, setGroup] = useState({
-    id: 'todos',
-    name: 'Todos',
+  const { goBack, navigate } = useNavigation();
+  const { group, setGroup } = useGroup();
+  const { createContact } = useContact();
+  const [error, setError] = useState('')
+
+  const { handleSubmit, control, getValues, formState: { errors } } = useForm({
+    resolver: yupResolver(schema)
   });
-  const [phones, setPhones] = useState<Phone[]>([]);
-  const [addresses, setAddresses] = useState<Address[]>([]);
-  const [groupModalOpen, setGroupModalOpen] = useState(false);
 
-  const navigation = useNavigation();
+  const phonesFields = useFieldArray({
+    control,
+    name: "phones"
+  })
 
-  function handleOpenSelectGroupModal() {
-    setGroupModalOpen(true);
+  const addressesFields = useFieldArray({
+    control,
+    name: "addresses"
+  })
+
+  function handleRegister(form: FormData) {
+    if (!group.id) {
+      setError('Selecione um grupo');
+      return;
+    }
+    createContact(form);
+    setGroup({
+      id: '',
+      name: ''
+    });
+    goBack();
   }
 
-  function handleCloseSelectGroupModal() {
-    setGroupModalOpen(false);
+  async function handleSearchCEP(index: number) {
+    const addresses = getValues("addresses");
+
+    const address = await searchCEP(addresses[index].cep);
+    
+    if (address) {
+      addressesFields.update(index, {
+        ...address
+      })
+    }
   }
 
-  function handleAddPhone() {
-    setPhones(oldState => [...oldState, {
-      id: String(uuid.v4()),
-      number: ''
-    }]);
-  }
-
-  function handleRemovePhone(id: string) {
-    const auxPhones = phones;
-
-    const index = auxPhones.findIndex(phone => phone.id === id);
-
-    auxPhones.splice(index, 1);
-
-    setPhones([...auxPhones]);
-  }
-
-  function handleAddAddress() {
-    setAddresses(oldState => [...oldState, {
-      id: String(uuid.v4()),
-      cep: '',
-      city: '',
-      district: '',
-      street: '',
-      number: 0,
-    }]);
-  }
-
-  function handleRemoveAddress(id: string) {
-    const auxAddresses = addresses;
-
-    const index = auxAddresses.findIndex(address => address.id === id);
-
-    auxAddresses.splice(index, 1);
-
-    setAddresses([...auxAddresses]);
-  }
-
+  useEffect(() => {
+    if (group.id) {
+      setError('');
+    }
+  }, [group])
 
   return (
-    <Container>
-      <Form>
-        <Fields showsVerticalScrollIndicator={false}>
-          <Divider>
-            <Label>
-              <LabelIcon name="group" size={32} />
-              <LabelText>Grupo</LabelText>
-            </Label>
-            <GroupSelectButton
-              title={group.name}
-              // onPress={handleOpenSelectGroupModal}
-              onPress={() => navigation.navigate("GroupSelect")}
-            />
-          </Divider>
-          <Divider>
-            <Label>
-              <LabelIcon name="user" size={32} />
-              <LabelText>Nome</LabelText>
-            </Label>
-            <Input placeholder="Nome" />
-          </Divider>
-          <Divider>
-            <ContactInformation>
-              <ContactInformationIcon name="phone" size={32} />
-              <ContactInformationText>
-                Telefone
-              </ContactInformationText>
-              <ContactInformationAddButton onPress={() => handleAddPhone()}>
-                <ContactInformationAddButtonIcon name="plus" size={32} />
-              </ContactInformationAddButton>
-            </ContactInformation>
+      <Container>
+        <Form>
+          <Fields showsVerticalScrollIndicator={false}>
+            <Divider>
+              <Label icon="users" title="Grupo" />
+              <GroupSelectButton
+                title={group.name}
+                onPress={() => navigate("GroupSelect")}
+              />
+              {error.length !== 0 && <Error>{error}</Error>}
+            </Divider>
+            <Divider>
+              <Label title="Nome" icon="user" />
+              <InputForm
+                placeholder="Nome"
+                control={control}
+                name="name"
+                error={errors.name && errors.name.message}
+              />
+            </Divider>
+            <Divider>
+              <ContactInformation>
+                <ContactInformationIcon name="phone" size={32} />
+                <ContactInformationText>
+                  Telefone
+                </ContactInformationText>
+                <ContactInformationAddButton onPress={() => phonesFields.append({
+                  number: "",
+                })}>
+                  <ContactInformationAddButtonIcon name="plus" size={32} />
+                </ContactInformationAddButton>
+              </ContactInformation>
 
-            {phones.map(phone => {
-              return (
-                <Information key={phone.id}>
-                  <Input placeholder="Telefone" keyboardType="phone-pad" style={{ flex: 1 }} />
-                  <ContactInformationRemoveButton onPress={() => handleRemovePhone(phone.id)}>
-                    <ContactInformationRemoveButtonIcon name="minus" size={32} />
-                  </ContactInformationRemoveButton>
-                </Information>
-              );
-            })}
-          </Divider>
-          <Divider>
-            <ContactInformation>
-              <ContactInformationIcon name="location-on" size={32} />
-              <ContactInformationText>
-                Endereço
-              </ContactInformationText>
-              <ContactInformationAddButton onPress={() => handleAddAddress()}>
-                <ContactInformationAddButtonIcon name="plus" size={32} />
-              </ContactInformationAddButton>
-            </ContactInformation>
-
-            {addresses.map(address => {
-              return (
-                <Address key={address.id}>
-                  <Information>
-                    <Input placeholder="CEP" keyboardType="numeric" style={{ flex: 1 }} />
-                    <ContactInformationRemoveButton onPress={() => handleRemoveAddress(address.id)}>
+              {phonesFields.fields.map((phone, index) => {
+                return (
+                  <Information key={phone.id}>
+                    <ContactInformationRemoveButton onPress={() => phonesFields.remove(index)}>
                       <ContactInformationRemoveButtonIcon name="minus" size={32} />
                     </ContactInformationRemoveButton>
+                    <InputForm
+                      mask="phone"
+                      maxLength={15}
+                      placeholder="Telefone"
+                      keyboardType="phone-pad"
+                      control={control}
+                      name={`phones[${index}].number`}
+                      error={errors?.phones?.[index]?.number
+                        && errors.phones[index].number.message}
+                    />
                   </Information>
+                );
+              })}
+            </Divider>
+            <Divider>
+              <ContactInformation>
+                <ContactInformationIcon name="location-on" size={32} />
+                <ContactInformationText>
+                  Endereço
+                </ContactInformationText>
+                <ContactInformationAddButton onPress={() => addressesFields.append({
+                  cep: "",
+                  city: "",
+                  street: "",
+                  district: "",
+                  number: "",
+                })}>
+                  <ContactInformationAddButtonIcon name="plus" size={32} />
+                </ContactInformationAddButton>
+              </ContactInformation>
 
-                  <Input placeholder="Logradouro" />
-                  <Input placeholder="Bairro" />
-                  <Input placeholder="Cidade" />
-                  <Input placeholder="Número" keyboardType="numeric" />
-                </Address>
+              {addressesFields.fields.map((address, index) => {
+                return (
+                  <Address key={address.id}>
+                    <Information>
+                      <ContactInformationRemoveButton onPress={() => addressesFields.remove(index)}>
+                        <ContactInformationRemoveButtonIcon name="minus" size={32} />
+                      </ContactInformationRemoveButton>
+                      <View style={{ flex: 1 }}>
+                        <InputForm
+                          mask="cep"
+                          maxLength={9}
+                          placeholder="CEP"
+                          keyboardType="numeric"
+                          control={control}
+                          name={`addresses[${index}].cep`}
+                          error={errors?.addresses?.[index]?.cep
+                            && errors.addresses[index].cep.message}
+                        />
+                      </View>
+                      <ContactInformationSearchButton onPress={() => handleSearchCEP(index)}>
+                        <ContactInformationSearchButtonIcon name="search" size={32} />
+                      </ContactInformationSearchButton>
+                    </Information>
+                    <InputForm
+                      placeholder="Cidade"
+                      control={control}
+                      name={`addresses[${index}].city`}
+                      error={errors?.addresses?.[index]?.city
+                        && errors.addresses[index].city.message}
+                    />
+                    <InputForm
+                      placeholder="Bairro"
+                      control={control}
+                      name={`addresses[${index}].district`}
+                      error={errors?.addresses?.[index]?.district
+                        && errors.addresses[index].district.message}
+                    />
+                    <InputForm
+                      placeholder="Logradouro"
+                      control={control}
+                      name={`addresses[${index}].street`}
+                      error={errors?.addresses?.[index]?.street
+                        && errors.addresses[index].street.message}
+                    />
+                    <InputForm
+                      keyboardType="numeric"
+                      placeholder="Número"
+                      control={control}
+                      name={`addresses[${index}].number`}
+                      error={errors?.addresses?.[index]?.number
+                        && errors.addresses[index].number.message}
+                    />
+                  </Address>
+                );
+              })}
+            </Divider>
+          </Fields>
 
-              );
-            })}
-          </Divider>
-        </Fields>
-
-        <Button type="success" onPress={() => {}} title="Adicionar" />
-      </Form>
-
-      {/* <Modal visible={groupModalOpen}>
-        <GroupSelect
-          group={group}
-          setGroup={setGroup}
-          closeSelectGroup={handleCloseSelectGroupModal}
-        />
-      </Modal> */}
-    </Container>
+          <Button
+            type="success"
+            onPress={handleSubmit(handleRegister)}
+            title="Adicionar"
+          />
+        </Form>
+      </Container>
   )
 }

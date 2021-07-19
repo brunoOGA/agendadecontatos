@@ -1,5 +1,5 @@
 import React from 'react';
-import { RectButtonProps } from 'react-native-gesture-handler';
+import { TouchableOpacityProps, View } from 'react-native';
 
 import {
   Container,
@@ -9,24 +9,22 @@ import {
   Icon
 } from './styles';
 
-interface Props extends RectButtonProps {
+interface Props extends TouchableOpacityProps {
   name: string;
-  onPress: () => void;
 };
 
-export function ListItem({onPress, name, ...rest}: Props) {
+export function ListItem({ name, ...rest }: Props) {
   return (
-
-    <Container onPress={onPress} {...rest}>
-      <InitialLetter>
-        <InitialLetterText>
-          {name[0].toUpperCase()}
-        </InitialLetterText>
-      </InitialLetter>
-      <Name>
-        {name}
-      </Name>
-      <Icon name="chevron-right" size={24} />
+    <Container {...rest}>
+        <InitialLetter>
+          <InitialLetterText>
+            {name[0].toUpperCase()}
+          </InitialLetterText>
+        </InitialLetter>
+        <Name>
+          {name}
+        </Name>
+        <Icon name="chevron-right" size={24} />
     </Container>
   );
 }

@@ -25,34 +25,34 @@ export const Form = styled.View`
   justify-content: space-between;
 `;
 
+export const Fields = styled.View``;
+
 export const FormTitle = styled.Text`
   font-family: ${({ theme }) => theme.fonts.medium};
   color: ${({ theme }) => theme.colors.text};
   font-size: ${RFValue(32)}px;
 `;
 
-export const Fields = styled.View``;
+// export const Label = styled.View`
+//   flex-direction: row;
 
-export const Label = styled.View`
-  flex-direction: row;
+//   align-items: center;
+//   justify-content: center;
 
-  align-items: center;
-  justify-content: center;
+//   margin-bottom: 8px;
+// `;
 
-  margin-bottom: 8px;
-`;
+// export const LabelIcon = styled(Entypo)`
+//   color: ${({ theme }) => theme.colors.title};
+// `;
 
-export const LabelIcon = styled(Entypo)`
-  color: ${({ theme }) => theme.colors.title};
-`;
-
-export const LabelText = styled.Text`
-  font-family: ${({ theme }) => theme.fonts.medium};
-  color: ${({ theme }) => theme.colors.title};
-  font-size: ${RFValue(24)}px;
-  flex: 1;
-  margin-left: 8px;
-`;
+// export const LabelText = styled.Text`
+//   font-family: ${({ theme }) => theme.fonts.medium};
+//   color: ${({ theme }) => theme.colors.title};
+//   font-size: ${RFValue(24)}px;
+//   flex: 1;
+//   margin-left: 8px;
+// `;
 
 export const Footer = styled.View`
   width: 100%; 
@@ -67,7 +67,9 @@ export const FooterText = styled.Text`
   color: ${({ theme }) => theme.colors.text_dark};
 `;
 
-export const FooterLink = styled.TouchableOpacity``;
+export const FooterLink = styled.TouchableOpacity`
+
+`;
 
 export const FooterLinkText = styled.Text`
   font-size: ${RFValue(17)}px;

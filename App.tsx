@@ -1,7 +1,8 @@
 import React from 'react';
+
+console.ignoredYellowBox = ['Setting a timer'];
 import { ThemeProvider } from 'styled-components/native';
 import AppLoading from 'expo-app-loading';
-import { NavigationContainer } from '@react-navigation/native';
 
 import {
   useFonts,
@@ -10,13 +11,25 @@ import {
   Roboto_700Bold
 } from '@expo-google-fonts/roboto';
 
-import { SignIn } from './src/screens/SignIn';
 import theme from './src/global/styles/theme';
-import { Contacts } from './src/screens/Contacts';
-import { FormContact } from './src/screens/FormContact';
-import { FormGroup } from './src/screens/FormGroup';
-import { AppRoutes } from './src/routes/app.routes';
-import { AuthProvider } from './src/hooks/auth';
+import { AuthProvider, useAuth } from './src/hooks/auth';
+import firebase from 'firebase';
+import { Routes } from './src/routes';
+
+var firebaseConfig = {
+  apiKey: "AIzaSyA9aEOZkV71Dyi4R5lSDxEJMaRW2j21QpY",
+  authDomain: "agendadecontatos-786a3.firebaseapp.com",
+  projectId: "agendadecontatos-786a3",
+  storageBucket: "agendadecontatos-786a3.appspot.com",
+  messagingSenderId: "680765221788",
+  appId: "1:680765221788:web:1172104bdd023fd7aaf659",
+  measurementId: "G-BPNT1CV7Y7"
+};
+
+
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -25,17 +38,17 @@ export default function App() {
     Roboto_700Bold
   });
 
-  if (!fontsLoaded) {
+  const { userStorageLoading } = useAuth();
+
+  if (!fontsLoaded || userStorageLoading) {
     return <AppLoading />;
   }
 
   return (
     <ThemeProvider theme={theme}>
-      <NavigationContainer>
-        <AuthProvider>
-          <SignIn />
-        </AuthProvider>
-      </NavigationContainer>
+      <AuthProvider>
+        <Routes />
+      </AuthProvider>
     </ThemeProvider>
   );
 }

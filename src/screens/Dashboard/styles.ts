@@ -1,14 +1,32 @@
-import styled from 'styled-components/native';
-import { FontAwesome } from '@expo/vector-icons';
+import styled, { css } from 'styled-components/native';
+import { FontAwesome, AntDesign } from '@expo/vector-icons';
 import { RFPercentage, RFValue } from 'react-native-responsive-fontsize';
 import { FlatList } from 'react-native';
 import { RectButton } from 'react-native-gesture-handler';
 
+interface Address {
+  cep: string;
+  city: string;
+  street: string;
+  district: string;
+  number: number;
+}
+
+interface Phone {
+  number: string;
+}
 
 interface IContact {
   id: string;
   name: string;
+  phones: Phone[];
+  addresses: Address[];
 }
+
+
+interface Props {
+  flag: boolean;
+};
 
 export const Container = styled.View`
   flex: 1;
@@ -23,7 +41,21 @@ export const Header = styled.View`
   align-items: center;
 `;
 
-export const Title = styled.Text`
+export const SignOutButton = styled(RectButton)``;
+
+export const SignOutIcon = styled(AntDesign)`
+  color: ${({ theme }) => theme.colors.attention};
+`;
+
+export const Title = styled.View`
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 8px 16px;
+`;
+
+export const TitleText = styled.Text`
   font-family: ${({ theme }) => theme.fonts.bold};
   color: ${({ theme }) => theme.colors.shape};
   font-size:  ${RFValue(32)}px;
@@ -43,7 +75,7 @@ export const Groups = styled.ScrollView.attrs({
   margin-top: ${RFPercentage(28)}px;
 `;
 
-export const GroupButton = styled(RectButton)`
+export const GroupButton = styled.TouchableOpacity`
   width: ${RFValue(124)}px;
   background-color: ${({ theme }) => theme.colors.shape};
   border-radius: 8px;
@@ -94,8 +126,18 @@ export const InitialLetterText = styled.Text`
   font-size: ${RFValue(32)}px;
 `;
 
-export const ContactsList = styled(FlatList as new () => FlatList<IContact>)`
-  margin-top: ${RFPercentage(10)}px;
+export const ContactsList = styled(FlatList as new () => FlatList<IContact>) <Props>`
+  ${({ flag }) => flag ? 
+    css` 
+      margin-top: ${RFPercentage(10)}px;
+    `
+    :
+    css`
+      position: absolute;
+      width: 100%;
+      margin-top: ${RFPercentage(28)}px;
+    `
+  }
 `;
 
 export const Separator = styled.View`

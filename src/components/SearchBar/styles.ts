@@ -15,7 +15,7 @@ export const Container = styled.View`
 
 export const Input = styled(TextInput)`
   flex: 1;
-  padding: 16px;
+  padding: ${RFValue(16)}px;
 
   font-family: ${({ theme }) => theme.fonts.regular};
   color: ${({ theme }) => theme.colors.text_dark};

@@ -1,5 +1,6 @@
 import React from 'react';
 import { useAuth } from '../../hooks/auth';
+import firebase from 'firebase';
 
 import {
   Container,
@@ -13,12 +14,13 @@ import {
   FooterLink,
   FooterLinkText,
 } from './styles';
-import { Keyboard, TouchableWithoutFeedback } from 'react-native';
+import { Alert, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { Input } from '../../components/Form/Input';
 import { Button } from '../../components/Form/Button';
 import { useNavigation } from '@react-navigation/native';
 import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
-import { yupResolver } from '@hookform/resolvers/yup';
+import { yupResolver } from '@hookform/resolvers/yup'
 import { InputForm } from '../../components/Form/InputForm';
 import { Label } from '../../components/Form/Label';
 
@@ -38,15 +40,15 @@ const schema = Yup.object().shape({
     .required('Senha requerida'),
 });
 
-export function SignIn() {
-  const { signInWithEmailAndPassword } = useAuth();
-  const { navigate } = useNavigation();
+export function SignUp() {
+  const { createUserWithEmailAndPassword } = useAuth();
+  const { goBack } = useNavigation();
   const { handleSubmit, control, formState: { errors } } = useForm({
     resolver: yupResolver(schema)
   });
 
   function handleRegister(form: FormData) {
-    signInWithEmailAndPassword(form.email, form.password);
+    createUserWithEmailAndPassword(form.email, form.password);
   }
 
   return (
@@ -60,7 +62,9 @@ export function SignIn() {
           </Divider>
           <Fields>
             <Divider>
-              <FormTitle>Fazer login</FormTitle>
+              <FormTitle>
+                Criar conta
+              </FormTitle>
             </Divider>
             <Divider>
               <Label title="E-mail" icon="mail" />
@@ -74,7 +78,7 @@ export function SignIn() {
               />
             </Divider>
             <Divider>
-            <Label title="Senha" icon="lock" />
+              <Label title="Senha" icon="lock" />
               <InputForm
                 placeholder="Senha"
                 secureTextEntry={true}
@@ -85,15 +89,15 @@ export function SignIn() {
             </Divider>
             <Divider>
               <Footer>
-                <FooterText >Não possui conta? </FooterText>
-                <FooterLink onPress={() => navigate("SignUp")}>
-                  <FooterLinkText >Cadastre-se</FooterLinkText>
+                <FooterText >Você já tem uma conta? </FooterText>
+                <FooterLink onPress={() => goBack()}>
+                  <FooterLinkText>Fazer login</FooterLinkText>
                 </FooterLink>
               </Footer>
             </Divider>
           </Fields>
 
-          <Button type="success" onPress={handleSubmit(handleRegister)} title="Entrar" />
+          <Button type="success" onPress={handleSubmit(handleRegister)} title="Criar sua conta" />
         </Form>
       </Container>
     </TouchableWithoutFeedback>

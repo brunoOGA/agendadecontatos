@@ -1,7 +1,8 @@
 import React from 'react';
+import { useNavigation } from '@react-navigation/native';
 import { FlatList } from 'react-native-gesture-handler';
-import { groups } from '../../utils/groups';
 import { Button } from '../../components/Form/Button';
+import { useGroup } from '../../hooks/group';
 
 import {
   Container,
@@ -13,14 +14,15 @@ import {
   Separator,
   Section,
 } from './styles';
-import { useNavigation } from '@react-navigation/native';
 
-interface Group {
-  id: string;
-  name: string;
-}
 export function GroupSelect() {
-  const navigation = useNavigation();
+  const { goBack, navigate } = useNavigation();
+  const { group, findGroupById, groups } = useGroup();
+
+  function handleSelectGroup(id: string) {
+    findGroupById(id);
+    goBack()
+  }
 
   return (
     <Container>
@@ -30,7 +32,7 @@ export function GroupSelect() {
       <Section>
         <Button
           title="Criar novo grupo"
-          onPress={() => navigation.navigate("FormGroup")}
+          onPress={() => navigate("FormGroup")}
           type="success"
         />
       </Section>
@@ -41,9 +43,8 @@ export function GroupSelect() {
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <Group
-            onPress={() => navigation.goBack()}
-            isActive={true}
-            // isActive={group.id === item.id}
+            onPress={() =>  handleSelectGroup(item.id)}
+            isActive={group.id === item.id}
           >
             <Icon name={item.icon} />
             <Name>{item.name}</Name>
@@ -55,7 +56,7 @@ export function GroupSelect() {
       <Section>
         <Button
           title="Cancelar"
-          onPress={() => navigation.goBack()}
+          onPress={() => goBack()}
           type="attention"
         />
       </Section>
